@@ -1,10 +1,11 @@
 /* ============================================================
-   REDBOX SCHOOL — Service Worker
+   REDBOX SCHOOL — Service Worker (v2)
    ============================================================ */
-const CACHE = "redbox-v1";
+const CACHE = "redbox-v2";
 const ASSETS = [
   "./",
   "./index.html",
+  "./admin.html",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"
@@ -28,11 +29,8 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
-
-  // ไม่แคชการเรียก API ของ Google Apps Script
   if (url.hostname.indexOf("script.google") !== -1 ||
       url.hostname.indexOf("googleusercontent") !== -1) return;
-
   if (e.request.method !== "GET") return;
 
   e.respondWith(
