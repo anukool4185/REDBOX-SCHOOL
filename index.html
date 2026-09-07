@@ -4,93 +4,171 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>REDBOX SCHOOL | กล่องแดงถึงครูฝ่ายกิจการนักเรียน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{ --red:#d92027; --dark:#1b1b1f; --line:#e6e6ea; }
-  *{box-sizing:border-box;font-family:"Sarabun","Segoe UI",sans-serif}
-  body{margin:0;background:#f4f5f7;color:var(--dark)}
-  header{background:var(--red);color:#fff;padding:26px 20px;text-align:center}
-  header h1{margin:0;font-size:26px;letter-spacing:1px}
-  header p{margin:6px 0 0;opacity:.9;font-size:14px}
-  .wrap{max-width:640px;margin:-24px auto 40px;padding:0 16px}
-  .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+  :root{
+    --red:#d92027; --red-dark:#a8181e; --dark:#1b1b1f;
+    --line:#e6e6ea; --muted:#7a7a85; --bg:#f4f5f7;
+  }
+  *{box-sizing:border-box;font-family:'Sarabun',-apple-system,'Segoe UI',sans-serif}
+  body{margin:0;background:var(--bg);color:var(--dark);-webkit-font-smoothing:antialiased}
+
+  header{
+    background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);
+    color:#fff;padding:32px 20px 48px;text-align:center;
+  }
+  header .logo{font-size:40px;line-height:1}
+  header h1{margin:8px 0 0;font-size:28px;font-weight:700;letter-spacing:1px}
+  header p{margin:8px 0 0;opacity:.92;font-size:14px}
+
+  .wrap{max-width:660px;margin:-32px auto 48px;padding:0 16px}
+  .card{background:#fff;border-radius:18px;padding:26px;box-shadow:0 10px 30px rgba(0,0,0,.09)}
+
+  .section-title{
+    font-size:13px;font-weight:700;color:var(--red);letter-spacing:.5px;
+    margin:22px 0 4px;padding-bottom:6px;border-bottom:2px solid #f2f2f5;
+  }
+  .section-title:first-child{margin-top:0}
+
   label{display:block;font-weight:600;margin:14px 0 6px;font-size:14px}
-  input,select,textarea{width:100%;padding:11px 13px;border:1px solid var(--line);
-    border-radius:10px;font-size:15px;outline:none;background:#fff}
-  input:focus,select:focus,textarea:focus{border-color:var(--red)}
-  textarea{min-height:120px;resize:vertical}
-  .row{display:flex;gap:12px}.row>div{flex:1}
-  .hint{font-size:12px;color:#777;margin-top:4px}
-  button{width:100%;margin-top:22px;padding:13px;border:0;border-radius:10px;
-    background:var(--red);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+  .req{color:var(--red)}
+  input,select,textarea{
+    width:100%;padding:12px 14px;border:1.5px solid var(--line);
+    border-radius:10px;font-size:15px;outline:none;background:#fff;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--red);box-shadow:0 0 0 3px rgba(217,32,39,.12);
+  }
+  input.bad,select.bad,textarea.bad{border-color:var(--red);background:#fff8f8}
+  textarea{min-height:130px;resize:vertical;line-height:1.6}
+
+  .row{display:flex;gap:12px}
+  .row>div{flex:1;min-width:0}
+  @media(max-width:520px){ .row{flex-direction:column;gap:0} }
+
+  .hint{font-size:12px;color:var(--muted);margin-top:5px}
+  .err-txt{color:var(--red);font-size:12px;min-height:16px;margin-top:3px}
+  .counter{float:right;font-size:12px;color:var(--muted);font-weight:400}
+
+  .check{
+    display:flex;align-items:flex-start;gap:9px;margin-top:18px;padding:13px;
+    background:#fafafc;border:1px solid var(--line);border-radius:10px;cursor:pointer;
+  }
+  .check input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--red);flex:none}
+  .check span{font-size:13.5px;line-height:1.5}
+  .check small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+
+  button{
+    width:100%;margin-top:22px;padding:14px;border:0;border-radius:11px;
+    background:var(--red);color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+    font-family:'Sarabun',sans-serif;transition:background .15s,transform .1s;
+  }
+  button:hover:not(:disabled){background:var(--red-dark)}
+  button:active:not(:disabled){transform:scale(.99)}
   button:disabled{opacity:.6;cursor:not-allowed}
-  .msg{margin-top:14px;padding:12px;border-radius:10px;font-size:14px;display:none}
-  .ok{background:#e7f7ed;color:#1a7f43}.err{background:#fdecec;color:#b3261e}
-  .err-txt{color:var(--red);font-size:12px;min-height:15px}
+
+  .msg{margin-top:16px;padding:16px;border-radius:11px;font-size:14.5px;display:none;line-height:1.7}
+  .ok{background:#e7f7ed;color:#14663a;border:1px solid #bce5cd}
+  .err{background:#fdecec;color:#a8181e;border:1px solid #f5c6c6}
+  .ticket{
+    display:inline-block;background:#fff;border:2px dashed #14663a;border-radius:8px;
+    padding:6px 14px;font-size:19px;font-weight:700;letter-spacing:2px;margin:6px 0;
+  }
+  footer{text-align:center;color:var(--muted);font-size:12.5px;padding:0 20px 32px;line-height:1.8}
 </style>
 </head>
 <body>
+
 <header>
-  <h1>🟥 REDBOX SCHOOL</h1>
-  <p>กล่องรับเรื่อง — ส่งถึงครูฝ่ายกิจการนักเรียนโดยตรง</p>
+  <div class="logo">🟥</div>
+  <h1>REDBOX SCHOOL</h1>
+  <p>กล่องรับเรื่อง — ส่งตรงถึงครูฝ่ายกิจการนักเรียน</p>
 </header>
 
 <div class="wrap">
   <form class="card" id="redboxForm" novalidate>
+
+    <div class="section-title">ข้อมูลผู้แจ้ง</div>
+
     <div class="row">
       <div>
-        <label for="fullname">ชื่อ-นามสกุล *</label>
-        <input id="fullname" name="fullname" placeholder="เช่น สมชาย ใจดี">
+        <label for="fullname">ชื่อ-นามสกุล <span class="req">*</span></label>
+        <input id="fullname" name="fullname" placeholder="เช่น สมชาย ใจดี" autocomplete="name">
         <div class="err-txt" id="e-fullname"></div>
       </div>
       <div>
-        <label for="studentId">รหัสนักเรียน *</label>
-        <input id="studentId" name="studentId" placeholder="เช่น 65012345" inputmode="numeric">
+        <label for="studentId">รหัสนักเรียน <span class="req">*</span></label>
+        <input id="studentId" name="studentId" placeholder="เช่น 65012345" inputmode="numeric" maxlength="10">
         <div class="err-txt" id="e-studentId"></div>
       </div>
     </div>
 
     <div class="row">
       <div>
-        <label for="level">ระดับชั้น *</label>
+        <label for="level">ระดับชั้น <span class="req">*</span></label>
         <select id="level" name="level">
-          <option value="">-- เลือก --</option>
+          <option value="">— เลือกระดับชั้น —</option>
           <option>ม.1</option><option>ม.2</option><option>ม.3</option>
           <option>ม.4</option><option>ม.5</option><option>ม.6</option>
         </select>
         <div class="err-txt" id="e-level"></div>
       </div>
       <div>
-        <label for="room">ห้อง *</label>
-        <input id="room" name="room" placeholder="เช่น 4">
+        <label for="room">ห้อง <span class="req">*</span></label>
+        <input id="room" name="room" placeholder="เช่น 4" inputmode="numeric" maxlength="2">
         <div class="err-txt" id="e-room"></div>
+      </div>
+      <div>
+        <label for="phone">เบอร์ติดต่อ <span class="req">*</span></label>
+        <input id="phone" name="phone" placeholder="0812345678" inputmode="tel" maxlength="10" autocomplete="tel">
+        <div class="err-txt" id="e-phone"></div>
       </div>
     </div>
 
-    <label for="phone">เบอร์ติดต่อ *</label>
-    <input id="phone" name="phone" placeholder="0812345678" inputmode="tel" maxlength="10">
-    <div class="err-txt" id="e-phone"></div>
+    <div class="section-title">รายละเอียดเรื่องที่แจ้ง</div>
 
-    <label for="topic">ประเภทเรื่องที่แจ้ง *</label>
-    <select id="topic" name="topic">
-      <option value="">-- เลือกประเภท --</option>
-      <option>ขออนุญาต / ลากิจ-ลาป่วย</option>
-      <option>แจ้งปัญหาพฤติกรรมนักเรียน</option>
-      <option>แจ้งเหตุกลั่นแกล้ง (Bullying)</option>
-      <option>ขอคำปรึกษาส่วนตัว</option>
-      <option>แจ้งของหาย / ทรัพย์สินเสียหาย</option>
-      <option>เสนอแนะ / ร้องเรียน</option>
-      <option>อื่น ๆ</option>
-    </select>
-    <div class="err-txt" id="e-topic"></div>
+    <div class="row">
+      <div>
+        <label for="topic">ประเภทเรื่อง <span class="req">*</span></label>
+        <select id="topic" name="topic">
+          <option value="">— เลือกประเภท —</option>
+          <option>ขออนุญาต / ลากิจ-ลาป่วย</option>
+          <option>แจ้งปัญหาพฤติกรรมนักเรียน</option>
+          <option>แจ้งเหตุกลั่นแกล้ง (Bullying)</option>
+          <option>ขอคำปรึกษาส่วนตัว</option>
+          <option>แจ้งของหาย / ทรัพย์สินเสียหาย</option>
+          <option>เสนอแนะ / ร้องเรียน</option>
+          <option>อื่น ๆ</option>
+        </select>
+        <div class="err-txt" id="e-topic"></div>
+      </div>
+      <div>
+        <label for="urgency">ระดับความเร่งด่วน <span class="req">*</span></label>
+        <select id="urgency" name="urgency">
+          <option value="">— เลือกระดับ —</option>
+          <option>ปกติ</option>
+          <option>ค่อนข้างเร่งด่วน</option>
+          <option>เร่งด่วนมาก</option>
+        </select>
+        <div class="err-txt" id="e-urgency"></div>
+      </div>
+    </div>
 
-    <label for="message">รายละเอียด *</label>
-    <textarea id="message" name="message" placeholder="เล่าเหตุการณ์ วัน-เวลา สถานที่ และสิ่งที่ต้องการให้ช่วยเหลือ"></textarea>
-    <div class="hint">อย่างน้อย 10 ตัวอักษร</div>
+    <label for="message">
+      รายละเอียด <span class="req">*</span>
+      <span class="counter"><span id="cnt">0</span>/1000</span>
+    </label>
+    <textarea id="message" name="message" maxlength="1000"
+      placeholder="เล่าเหตุการณ์ให้ครบถ้วน เช่น วัน-เวลา สถานที่ ผู้เกี่ยวข้อง และสิ่งที่ต้องการให้ช่วยเหลือ"></textarea>
+    <div class="hint">กรอกอย่างน้อย 10 ตัวอักษร — ยิ่งละเอียด ครูยิ่งช่วยได้ตรงจุด</div>
     <div class="err-txt" id="e-message"></div>
 
-    <label style="font-weight:500;margin-top:16px">
-      <input type="checkbox" id="anonymous" style="width:auto;margin-right:6px">
-      ขอปกปิดชื่อผู้แจ้ง (ครูจะเห็นเฉพาะรหัสอ้างอิง)
+    <label class="check" for="anonymous">
+      <input type="checkbox" id="anonymous">
+      <span>ขอปกปิดชื่อผู้แจ้ง
+        <small>ครูจะเห็นเฉพาะรหัสติดตาม ไม่เห็นชื่อและรหัสนักเรียนของคุณ</small>
+      </span>
     </label>
 
     <button type="submit" id="btn">ส่งเรื่องเข้ากล่องแดง</button>
@@ -98,45 +176,75 @@
   </form>
 </div>
 
+<footer>
+  ข้อมูลของคุณถูกเก็บเป็นความลับ และเข้าถึงได้เฉพาะครูฝ่ายกิจการนักเรียนเท่านั้น<br>
+  © REDBOX SCHOOL
+</footer>
+
 <script>
-// 🔧 วาง URL ของ Google Apps Script (Deploy > Web app) ตรงนี้
-const API_URL = "https://script.google.com/macros/s/XXXXXXXX/exec";
+/* ============================================================
+   REDBOX SCHOOL — Frontend
+   ============================================================ */
+const API_URL = "https://script.google.com/macros/s/AKfycbye0mZF2XKfl-r25P_dEXhGn_I7oy1yjy_OPE0Yc1SnjaRH48K1PYuO74d2If4AS_0WZg/exec";
 
 const form = document.getElementById("redboxForm");
 const btn  = document.getElementById("btn");
 const box  = document.getElementById("result");
+const ta   = document.getElementById("message");
+const cnt  = document.getElementById("cnt");
 
+/* ---------- ตัวนับตัวอักษร ---------- */
+ta.addEventListener("input", () => cnt.textContent = ta.value.length);
+
+/* ---------- กติกาตรวจสอบข้อมูล ---------- */
 const rules = {
-  fullname : v => v.trim().length >= 3            || "กรุณากรอกชื่อ-นามสกุล",
-  studentId: v => /^\d{4,10}$/.test(v.trim())     || "รหัสนักเรียนต้องเป็นตัวเลข 4-10 หลัก",
-  level    : v => v !== ""                        || "กรุณาเลือกระดับชั้น",
-  room     : v => v.trim() !== ""                 || "กรุณากรอกห้อง",
-  phone    : v => /^0\d{9}$/.test(v.trim())       || "เบอร์โทรต้องเป็นตัวเลข 10 หลัก ขึ้นต้น 0",
-  topic    : v => v !== ""                        || "กรุณาเลือกประเภทเรื่อง",
-  message  : v => v.trim().length >= 10           || "กรุณากรอกรายละเอียดอย่างน้อย 10 ตัวอักษร"
+  fullname : v => v.trim().length >= 3        || "กรุณากรอกชื่อ-นามสกุล",
+  studentId: v => /^\d{4,10}$/.test(v.trim()) || "รหัสนักเรียนต้องเป็นตัวเลข 4-10 หลัก",
+  level    : v => v !== ""                    || "กรุณาเลือกระดับชั้น",
+  room     : v => /^\d{1,2}$/.test(v.trim())  || "กรุณากรอกห้องเป็นตัวเลข",
+  phone    : v => /^0\d{9}$/.test(v.trim())   || "เบอร์โทรต้องเป็นตัวเลข 10 หลัก ขึ้นต้นด้วย 0",
+  topic    : v => v !== ""                    || "กรุณาเลือกประเภทเรื่อง",
+  urgency  : v => v !== ""                    || "กรุณาเลือกระดับความเร่งด่วน",
+  message  : v => v.trim().length >= 10       || "กรุณากรอกรายละเอียดอย่างน้อย 10 ตัวอักษร"
 };
 
+function checkField(key){
+  const el  = form[key];
+  const res = rules[key](el.value);
+  document.getElementById("e-" + key).textContent = res === true ? "" : res;
+  el.classList.toggle("bad", res !== true);
+  return res === true;
+}
+
 function validate(){
-  let ok = true;
+  let ok = true, first = null;
   for (const key in rules){
-    const res = rules[key](form[key].value);
-    const el  = document.getElementById("e-" + key);
-    el.textContent = res === true ? "" : res;
-    if (res !== true) ok = false;
+    if (!checkField(key)) { ok = false; if (!first) first = form[key]; }
   }
+  if (first) first.scrollIntoView({ behavior:"smooth", block:"center" });
   return ok;
 }
 
+/* ตรวจซ้ำหลังผู้ใช้แก้ไข */
+Object.keys(rules).forEach(key => {
+  form[key].addEventListener("blur",  () => checkField(key));
+  form[key].addEventListener("change",() => checkField(key));
+});
+
+/* ---------- สร้างรหัสติดตาม ---------- */
 function ticketId(){
-  return "RB" + Date.now().toString(36).toUpperCase().slice(-6)
-       + Math.floor(Math.random()*90+10);
+  return "RB"
+    + Date.now().toString(36).toUpperCase().slice(-6)
+    + Math.floor(Math.random() * 90 + 10);
 }
 
+/* ---------- ส่งข้อมูล ---------- */
 form.addEventListener("submit", async e => {
   e.preventDefault();
   box.style.display = "none";
   if (!validate()) return;
 
+  const anon = document.getElementById("anonymous").checked;
   const payload = {
     ticket    : ticketId(),
     fullname  : form.fullname.value.trim(),
@@ -145,29 +253,43 @@ form.addEventListener("submit", async e => {
     room      : form.room.value.trim(),
     phone     : form.phone.value.trim(),
     topic     : form.topic.value,
+    urgency   : form.urgency.value,
     message   : form.message.value.trim(),
-    anonymous : document.getElementById("anonymous").checked,
-    createdAt : new Date().toLocaleString("th-TH")
+    anonymous : anon,
+    createdAt : new Date().toLocaleString("th-TH", { dateStyle:"medium", timeStyle:"short" })
   };
 
-  btn.disabled = true; btn.textContent = "กำลังส่ง...";
+  btn.disabled = true;
+  btn.textContent = "กำลังส่ง...";
+
   try {
     await fetch(API_URL, {
-      method : "POST",
-      mode   : "no-cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body   : JSON.stringify(payload)
+      method  : "POST",
+      mode    : "no-cors",
+      headers : { "Content-Type": "text/plain;charset=utf-8" },
+      body    : JSON.stringify(payload)
     });
+
     box.className = "msg ok";
-    box.innerHTML = `✅ ส่งเรื่องเรียบร้อย<br>รหัสติดตาม: <b>${payload.ticket}</b><br>
-                     กรุณาบันทึกรหัสนี้ไว้เพื่อสอบถามความคืบหน้า`;
+    box.innerHTML =
+      `<b>✅ ส่งเรื่องเรียบร้อยแล้ว</b><br>
+       รหัสติดตามของคุณคือ<br>
+       <span class="ticket">${payload.ticket}</span><br>
+       กรุณาบันทึกรหัสนี้ไว้ เพื่อใช้สอบถามความคืบหน้ากับครูฝ่ายกิจการนักเรียน`;
+
     form.reset();
+    cnt.textContent = "0";
+    Object.keys(rules).forEach(k => form[k].classList.remove("bad"));
+
   } catch (err) {
     box.className = "msg err";
-    box.textContent = "❌ ส่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง";
+    box.innerHTML = "<b>❌ ส่งไม่สำเร็จ</b><br>กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่อีกครั้ง";
   }
+
   box.style.display = "block";
-  btn.disabled = false; btn.textContent = "ส่งเรื่องเข้ากล่องแดง";
+  box.scrollIntoView({ behavior:"smooth", block:"center" });
+  btn.disabled = false;
+  btn.textContent = "ส่งเรื่องเข้ากล่องแดง";
 });
 </script>
 </body>
