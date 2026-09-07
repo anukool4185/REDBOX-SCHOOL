@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>REDBOX — สร้างไอคอนแอป</title>
+<style>
+  body{font-family:'Sarabun',Segoe UI,sans-serif;background:#f4f5f7;margin:0;
+       display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+  .card{background:#fff;padding:30px;border-radius:18px;text-align:center;
+        box-shadow:0 10px 28px rgba(0,0,0,.09);max-width:420px}
+  h1{color:#d92027;font-size:22px;margin:0 0 6px}
+  p{color:#7a7a85;font-size:14px;line-height:1.7;margin:0 0 18px}
+  canvas{border-radius:22%;box-shadow:0 6px 18px rgba(0,0,0,.15);margin:8px}
+  button{width:100%;margin-top:10px;padding:13px;border:0;border-radius:11px;
+         background:#d92027;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+  button:hover{background:#a8181e}
+  input{width:100%;padding:11px;border:1.5px solid #e6e6ea;border-radius:10px;
+        font-size:15px;text-align:center;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🟥 สร้างไอคอน REDBOX</h1>
+  <p>พิมพ์ตัวอักษรที่ต้องการ (แนะนำ 2 ตัว) แล้วกดดาวน์โหลด<br>
+     นำไฟล์ที่ได้ไปอัปโหลดขึ้น GitHub</p>
+  <input id="txt" value="RB" maxlength="3">
+  <div>
+    <canvas id="c192" width="192" height="192" style="width:96px;height:96px"></canvas>
+    <canvas id="c512" width="512" height="512" style="width:128px;height:128px"></canvas>
+  </div>
+  <button onclick="dl(192)">ดาวน์โหลด icon-192.png</button>
+  <button onclick="dl(512)">ดาวน์โหลด icon-512.png</button>
+</div>
+
+<script>
+function draw(size){
+  const c = document.getElementById("c" + size);
+  const x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, size, size);
+  g.addColorStop(0, "#d92027");
+  g.addColorStop(1, "#a8181e");
+  x.fillStyle = g;
+  x.fillRect(0, 0, size, size);
+
+  x.fillStyle = "#fff";
+  x.textAlign = "center";
+  x.textBaseline = "middle";
+  x.font = "bold " + Math.round(size * 0.38) + "px 'Segoe UI',Arial,sans-serif";
+  x.fillText(document.getElementById("txt").value || "RB", size / 2, size * 0.52);
+}
+function render(){ draw(192); draw(512); }
+function dl(size){
+  const a = document.createElement("a");
+  a.download = "icon-" + size + ".png";
+  a.href = document.getElementById("c" + size).toDataURL("image/png");
+  a.click();
+}
+document.getElementById("txt").addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
