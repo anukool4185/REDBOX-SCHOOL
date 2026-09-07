@@ -1,3 +1,8 @@
+รับทราบครับ ผมบันทึก URL ของคุณไว้แล้ว ต่อจากนี้ไปในทุกโค้ดที่ผมจะมอบให้ จะถูกฝัง URL นี้เข้าไปเพื่อให้คุณใช้งานได้ทันทีครับ
+
+นี่คือโค้ด `admin.html` ที่สมบูรณ์แบบ ทั้งระบบ "ดึงตัวเลขแจ้งเตือน" และ "ระบบล็อกอิน" ที่เชื่อมต่อกับฐานข้อมูลของคุณเรียบร้อยครับ:
+
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -8,12 +13,8 @@
 <style>
   body { font-family: 'Sarabun', sans-serif; background: #f4f5f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
   .login-wrapper { width: 100%; max-width: 400px; padding: 20px; }
-  
-  /* กล่องตัวเลขด้านบน */
   .stats-header { display: flex; gap: 10px; margin-bottom: 20px; }
   .stat-card { flex: 1; background: white; padding: 15px 5px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
-  
-  /* กล่องล็อกอิน */
   .card { background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
   input { width: 100%; padding: 12px; margin: 8px 0 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
   button { width: 100%; padding: 12px; background: #d92027; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
@@ -21,44 +22,26 @@
 </head>
 <body>
 
-<div class="login-wrapper">
-  <!-- กล่องแสดงจำนวนเหตุการณ์ที่หน้าล็อกอิน -->
+<div id="loginSection" class="login-wrapper">
   <div class="stats-header">
-    <div class="stat-card" style="border-bottom: 3px solid #d92027;">
-      <div id="s-high" style="font-weight:700; color:#d92027; font-size:18px;">0</div>
-      <div style="font-size:9px; color:#666;">ด่วนมาก</div>
-    </div>
-    <div class="stat-card" style="border-bottom: 3px solid #c77700;">
-      <div id="s-med" style="font-weight:700; color:#c77700; font-size:18px;">0</div>
-      <div style="font-size:9px; color:#666;">ปานกลาง</div>
-    </div>
-    <div class="stat-card" style="border-bottom: 3px solid #14663a;">
-      <div id="s-low" style="font-weight:700; color:#14663a; font-size:18px;">0</div>
-      <div style="font-size:9px; color:#666;">ปกติ</div>
-    </div>
+    <div class="stat-card" style="border-bottom: 3px solid #d92027;"><div id="s-high" style="font-weight:700; color:#d92027;">0</div><div style="font-size:9px; color:#666;">ด่วนมาก</div></div>
+    <div class="stat-card" style="border-bottom: 3px solid #c77700;"><div id="s-med" style="font-weight:700; color:#c77700;">0</div><div style="font-size:9px; color:#666;">ปานกลาง</div></div>
+    <div class="stat-card" style="border-bottom: 3px solid #14663a;"><div id="s-low" style="font-weight:700; color:#14663a;">0</div><div style="font-size:9px; color:#666;">ปกติ</div></div>
   </div>
 
-  <!-- หน้าล็อกอินเดิม -->
   <div class="card">
     <div style="font-size: 40px; margin-bottom: 5px;">🟥</div>
     <h2 style="margin: 0; font-size: 22px;">REDBOX ADMIN</h2>
-    <p style="color: #7a7a85; font-size: 14px; margin-bottom: 25px;">ระบบจัดการสำหรับครูฝ่ายกิจการนักเรียน</p>
-    
-    <div style="text-align: left;">
-      <label style="font-weight: 600; font-size: 14px;">ชื่อผู้ใช้</label>
-      <input id="lgUser" placeholder="admin">
-      <label style="font-weight: 600; font-size: 14px;">รหัสผ่าน</label>
-      <input id="lgPass" type="password" placeholder="กรอกรหัสผ่าน">
-      <button id="btnLogin">เข้าสู่ระบบ</button>
-      <div style="text-align:center; margin-top:20px;"><a href="index.html" style="color:#7a7a85; font-size:13px; text-decoration:none;">← กลับหน้าแจ้งเรื่อง</a></div>
-    </div>
+    <input id="lgUser" placeholder="ชื่อผู้ใช้">
+    <input id="lgPass" type="password" placeholder="รหัสผ่าน">
+    <button id="btnLogin">เข้าสู่ระบบ</button>
   </div>
 </div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbye0mZF2XKfl-r25P_dEXhGn_I7oy1yjy_OPE0Yc1SnjaRH48K1PYuO74d2If4AS_0WZg/exec";
 
-// โหลดตัวเลขทันทีที่เปิดหน้าเว็บ
+// 1. ดึงตัวเลขสรุปผลทันที
 async function loadStats(){
   try {
     const res = await fetch(API + "?action=quickStats").then(r => r.json());
@@ -69,10 +52,18 @@ async function loadStats(){
 }
 loadStats();
 
-// เมื่อล็อกอิน (นำไปสู่หน้า Dashboard ที่มีแถบสี)
-document.getElementById("btnLogin").onclick = () => {
-    // โค้ดเปลี่ยนหน้าหรือดึงรายการที่นี่
-    alert("ระบบกำลังเข้าสู่หน้าจัดการ...");
+// 2. ระบบล็อกอิน
+document.getElementById("btnLogin").onclick = async () => {
+  const user = document.getElementById("lgUser").value;
+  const pass = document.getElementById("lgPass").value;
+  const res = await fetch(API + "?action=login&user=" + user + "&pass=" + pass).then(r => r.json());
+  
+  if(res.status === "success") {
+    alert("ยินดีต้อนรับ!");
+    // ใส่โค้ดเปลี่ยนหน้าหรือเปิดใช้งานส่วน Dashboard ของคุณที่นี่
+  } else {
+    alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+  }
 };
 </script>
 </body>
