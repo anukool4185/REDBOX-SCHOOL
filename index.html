@@ -184,6 +184,7 @@
 <script>
 /* ============================================================
    REDBOX SCHOOL — Frontend
+   ส่งข้อมูลแบบแยกฟิลด์ เพื่อให้ลงชีต 1 ข้อมูล = 1 เซล
    ============================================================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbye0mZF2XKfl-r25P_dEXhGn_I7oy1yjy_OPE0Yc1SnjaRH48K1PYuO74d2If4AS_0WZg/exec";
 
@@ -193,7 +194,6 @@ const box  = document.getElementById("result");
 const ta   = document.getElementById("message");
 const cnt  = document.getElementById("cnt");
 
-/* ---------- ตัวนับตัวอักษร ---------- */
 ta.addEventListener("input", () => cnt.textContent = ta.value.length);
 
 /* ---------- กติกาตรวจสอบข้อมูล ---------- */
@@ -225,7 +225,6 @@ function validate(){
   return ok;
 }
 
-/* ตรวจซ้ำหลังผู้ใช้แก้ไข */
 Object.keys(rules).forEach(key => {
   form[key].addEventListener("blur",  () => checkField(key));
   form[key].addEventListener("change",() => checkField(key));
@@ -238,15 +237,28 @@ function ticketId(){
     + Math.floor(Math.random() * 90 + 10);
 }
 
+/* ---------- แยกวันที่ / เวลา เป็นคนละฟิลด์ ---------- */
+function dateNow(){
+  const d = new Date();
+  const p = n => String(n).padStart(2, "0");
+  return p(d.getDate()) + "/" + p(d.getMonth() + 1) + "/" + (d.getFullYear() + 543);
+}
+function timeNow(){
+  const d = new Date();
+  const p = n => String(n).padStart(2, "0");
+  return p(d.getHours()) + ":" + p(d.getMinutes()) + " น.";
+}
+
 /* ---------- ส่งข้อมูล ---------- */
 form.addEventListener("submit", async e => {
   e.preventDefault();
   box.style.display = "none";
   if (!validate()) return;
 
-  const anon = document.getElementById("anonymous").checked;
   const payload = {
     ticket    : ticketId(),
+    date      : dateNow(),
+    time      : timeNow(),
     fullname  : form.fullname.value.trim(),
     studentId : form.studentId.value.trim(),
     level     : form.level.value,
@@ -255,8 +267,7 @@ form.addEventListener("submit", async e => {
     topic     : form.topic.value,
     urgency   : form.urgency.value,
     message   : form.message.value.trim(),
-    anonymous : anon,
-    createdAt : new Date().toLocaleString("th-TH", { dateStyle:"medium", timeStyle:"short" })
+    anonymous : document.getElementById("anonymous").checked
   };
 
   btn.disabled = true;
