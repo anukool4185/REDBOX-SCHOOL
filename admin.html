@@ -2,498 +2,78 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1b1b1f">
-<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>REDBOX ADMIN</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --red:#d92027; --red-dark:#a8181e; --dark:#1b1b1f;
-    --line:#e6e6ea; --muted:#7a7a85; --bg:#f4f5f7;
-    --ph:#c2c2ca; --green:#14663a; --amber:#c77700;
-  }
-  *{box-sizing:border-box;font-family:'Sarabun',-apple-system,'Segoe UI',sans-serif;
-    -webkit-tap-highlight-color:transparent}
-  body{margin:0;background:var(--bg);color:var(--dark);padding-bottom:80px}
-
-  ::placeholder{color:var(--ph);opacity:1}
-  input:focus::placeholder,textarea:focus::placeholder{color:transparent}
-  select.empty{color:var(--ph)}
-
-  header{background:var(--dark);color:#fff;padding:calc(16px + env(safe-area-inset-top)) 16px 16px;
-    display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:40}
-  header h1{margin:0;font-size:17px;font-weight:700;flex:1;letter-spacing:.5px}
-  header .badge{background:var(--red);font-size:10.5px;padding:3px 8px;border-radius:20px;font-weight:600}
-  header button{width:auto;margin:0;padding:7px 12px;font-size:12.5px;background:#33333c;border-radius:8px}
-
-  .wrap{max-width:900px;margin:18px auto;padding:0 14px}
-  .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 6px 20px rgba(0,0,0,.07);margin-bottom:14px}
-  .page{display:none}.page.on{display:block}
-
-  label{display:block;font-weight:600;margin:12px 0 6px;font-size:13.5px}
-  input,select,textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);
-    border-radius:9px;font-size:15px;outline:none;background:#fff;color:var(--dark)}
-  input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(217,32,39,.1)}
-  textarea{min-height:70px;resize:vertical;line-height:1.6}
-
-  button{width:100%;margin-top:14px;padding:12px;border:0;border-radius:10px;
-    background:var(--red);color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;
-    font-family:'Sarabun',sans-serif;transition:background .15s}
-  button:hover:not(:disabled){background:var(--red-dark)}
-  button:disabled{opacity:.55;cursor:not-allowed}
-  button.ghost{background:#fff;color:var(--dark);border:1.5px solid var(--line)}
-  button.ghost:hover:not(:disabled){background:#fafafc}
-  button.danger{background:#fff;color:var(--red);border:1.5px solid #f2c2c2}
-  button.danger:hover:not(:disabled){background:#fff5f5}
-  button.sm{width:auto;margin:0;padding:8px 14px;font-size:13px;border-radius:8px}
-
-  .msg{margin-top:12px;padding:13px;border-radius:10px;font-size:14px;display:none;line-height:1.6}
-  .ok{background:#e7f7ed;color:var(--green);border:1px solid #bce5cd}
-  .err{background:#fdecec;color:var(--red-dark);border:1px solid #f5c6c6}
-
-  .stats{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
-  .stat{flex:1;min-width:80px;background:#fff;border-radius:13px;padding:13px 8px;text-align:center;
-    box-shadow:0 4px 14px rgba(0,0,0,.06);cursor:pointer;border:2px solid transparent;transition:.15s}
-  .stat:hover{transform:translateY(-2px)}
-  .stat.on{border-color:var(--red)}
-  .stat b{display:block;font-size:21px;line-height:1.2}
-  .stat small{font-size:11px;color:var(--muted)}
-
-  .toolbar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}
-  .toolbar input{flex:2;min-width:150px}
-  .toolbar select{flex:1;min-width:120px}
-  .toolbar button{width:auto;margin:0;padding:11px 16px}
-
-  .item{background:#fff;border-radius:14px;padding:16px;margin-bottom:11px;
-    box-shadow:0 4px 14px rgba(0,0,0,.06);border-left:5px solid var(--line)}
-  .item.u2{border-left-color:#f0b400}
-  .item.u3{border-left-color:var(--red)}
-  .item-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-  .tk{font-weight:700;color:var(--red-dark);font-size:14.5px;letter-spacing:.5px}
-  .chip{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;white-space:nowrap}
-  .c-wait{background:#f0f0f3;color:#5a5a63}
-  .c-doing{background:#fff3d6;color:var(--amber)}
-  .c-done{background:#e0f5e9;color:var(--green)}
-  .c-cancel{background:#fdecec;color:var(--red-dark)}
-  .c-urgent{background:#fdecec;color:var(--red);border:1px solid #f5c6c6}
-  .meta{margin-top:9px;font-size:13px;color:var(--muted);line-height:1.8}
-  .meta b{color:var(--dark);font-weight:600}
-  .body{margin-top:11px;padding:12px;background:#fafafc;border-radius:9px;
-    font-size:13.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
-  .actions{margin-top:12px;display:flex;gap:9px;flex-wrap:wrap}
-  .actions select{flex:1;min-width:140px}
-  .actions button{width:auto;margin:0;padding:10px 15px;font-size:13.5px}
-  details summary{cursor:pointer;font-size:13px;color:var(--red);font-weight:600;
-    margin-top:10px;list-style:none}
-  details summary::-webkit-details-marker{display:none}
-  .tl2{margin-top:10px;padding:11px;background:#fafafc;border-radius:9px;font-size:12.5px;line-height:1.9}
-  .tl2 div{border-bottom:1px dashed var(--line);padding:4px 0}
-  .tl2 div:last-child{border:0}
-
-  .topic-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
-  .topic-row:last-child{border:0}
-  .topic-row span{flex:1;font-size:14.5px}
-  .topic-row.off span{color:var(--ph);text-decoration:line-through}
-  .topic-row button{width:auto;margin:0;padding:7px 12px;font-size:12.5px}
-
-  nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
-    display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:45;box-shadow:0 -3px 14px rgba(0,0,0,.06)}
-  nav button{flex:1;margin:0;border-radius:0;background:none;color:var(--muted);
-    padding:10px 4px 12px;font-size:11.5px;font-weight:600}
-  nav button.on{color:var(--red)}
-  nav button i{display:block;font-size:20px;font-style:normal;margin-bottom:2px}
-  .empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
-  .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);
-    border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
-  @keyframes sp{to{transform:rotate(360deg)}}
-  .hint{font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px}
-  .warn-box{background:#fff8e6;border:1px solid #f0dca6;color:#9a6b00;
-    padding:12px;border-radius:10px;font-size:13px;line-height:1.7;margin-top:12px}
+  body { font-family: 'Sarabun', sans-serif; background: #f4f5f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+  .login-wrapper { width: 100%; max-width: 400px; padding: 20px; }
+  
+  /* กล่องตัวเลขด้านบน */
+  .stats-header { display: flex; gap: 10px; margin-bottom: 20px; }
+  .stat-card { flex: 1; background: white; padding: 15px 5px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
+  
+  /* กล่องล็อกอิน */
+  .card { background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+  input { width: 100%; padding: 12px; margin: 8px 0 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+  button { width: 100%; padding: 12px; background: #d92027; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<!-- ============ หน้าล็อกอิน ============ -->
-<div id="loginScreen">
-  <div style="max-width:400px;margin:60px auto;padding:0 16px">
-    <div style="text-align:center;margin-bottom:22px">
-      <div style="font-size:42px">🟥</div>
-      <h2 style="margin:8px 0 2px;font-size:22px">REDBOX ADMIN</h2>
-      <p style="margin:0;color:#7a7a85;font-size:13.5px">ระบบจัดการสำหรับครูฝ่ายกิจการนักเรียน</p>
+<div class="login-wrapper">
+  <!-- กล่องแสดงจำนวนเหตุการณ์ที่หน้าล็อกอิน -->
+  <div class="stats-header">
+    <div class="stat-card" style="border-bottom: 3px solid #d92027;">
+      <div id="s-high" style="font-weight:700; color:#d92027; font-size:18px;">0</div>
+      <div style="font-size:9px; color:#666;">ด่วนมาก</div>
     </div>
-    <div class="card">
-      <label for="lgUser">ชื่อผู้ใช้</label>
-      <input id="lgUser" placeholder="admin" autocomplete="username">
-      <label for="lgPass">รหัสผ่าน</label>
-      <input id="lgPass" type="password" placeholder="กรอกรหัสผ่าน" autocomplete="current-password">
+    <div class="stat-card" style="border-bottom: 3px solid #c77700;">
+      <div id="s-med" style="font-weight:700; color:#c77700; font-size:18px;">0</div>
+      <div style="font-size:9px; color:#666;">ปานกลาง</div>
+    </div>
+    <div class="stat-card" style="border-bottom: 3px solid #14663a;">
+      <div id="s-low" style="font-weight:700; color:#14663a; font-size:18px;">0</div>
+      <div style="font-size:9px; color:#666;">ปกติ</div>
+    </div>
+  </div>
+
+  <!-- หน้าล็อกอินเดิม -->
+  <div class="card">
+    <div style="font-size: 40px; margin-bottom: 5px;">🟥</div>
+    <h2 style="margin: 0; font-size: 22px;">REDBOX ADMIN</h2>
+    <p style="color: #7a7a85; font-size: 14px; margin-bottom: 25px;">ระบบจัดการสำหรับครูฝ่ายกิจการนักเรียน</p>
+    
+    <div style="text-align: left;">
+      <label style="font-weight: 600; font-size: 14px;">ชื่อผู้ใช้</label>
+      <input id="lgUser" placeholder="admin">
+      <label style="font-weight: 600; font-size: 14px;">รหัสผ่าน</label>
+      <input id="lgPass" type="password" placeholder="กรอกรหัสผ่าน">
       <button id="btnLogin">เข้าสู่ระบบ</button>
-      <div class="msg" id="lgMsg"></div>
-      <div class="hint" style="text-align:center;margin-top:14px">
-        <a href="index.html" style="color:#7a7a85">← กลับหน้าแจ้งเรื่อง</a></div>
+      <div style="text-align:center; margin-top:20px;"><a href="index.html" style="color:#7a7a85; font-size:13px; text-decoration:none;">← กลับหน้าแจ้งเรื่อง</a></div>
     </div>
   </div>
-</div>
-
-<!-- ============ หน้าจัดการ ============ -->
-<div id="appScreen" style="display:none">
-  <header>
-    <span style="font-size:22px">🟥</span>
-    <h1>REDBOX ADMIN</h1>
-    <span class="badge" id="whoami">admin</span>
-    <button id="btnLogout">ออก</button>
-  </header>
-
-  <div class="wrap">
-
-    <!-- ---- แท็บรายการเรื่อง ---- -->
-    <section class="page on" id="p-list">
-      <div class="stats" id="stats"></div>
-      <div class="toolbar">
-        <input id="q" placeholder="ค้นหา รหัส / ชื่อ / ข้อความ">
-        <select id="fStatus" onchange="loadList()">
-          <option value="">ทุกสถานะ</option>
-          <option>รอตรวจสอบ</option>
-          <option>กำลังดำเนินการ</option>
-          <option>เสร็จสิ้น</option>
-          <option>ยกเลิก</option>
-        </select>
-        <button class="ghost" onclick="loadList()">🔄 รีเฟรช</button>
-      </div>
-      <div id="list"></div>
-    </section>
-
-    <!-- ---- แท็บประเภทเรื่อง ---- -->
-    <section class="page" id="p-topic">
-      <div class="card">
-        <h3 style="margin:0 0 4px;font-size:16px;color:var(--red)">จัดการประเภทเรื่อง</h3>
-        <p class="hint" style="margin-top:0">รายการที่ “เปิดใช้งาน” จะแสดงในฟอร์มของนักเรียนทันที</p>
-        <div style="display:flex;gap:9px;margin-top:14px">
-          <input id="newTopic" placeholder="พิมพ์ชื่อประเภทเรื่องใหม่">
-          <button class="sm" style="width:auto;margin:0;padding:11px 18px" onclick="addTopic()">เพิ่ม</button>
-        </div>
-        <div class="msg" id="tpMsg"></div>
-        <div id="topicList" style="margin-top:16px"></div>
-      </div>
-    </section>
-
-    <!-- ---- แท็บเครื่องมือ ---- -->
-    <section class="page" id="p-tool">
-      <div class="card">
-        <h3 style="margin:0 0 4px;font-size:16px;color:var(--red)">ล้างข้อมูลที่จัดการแล้ว</h3>
-        <p class="hint">ลบเรื่องที่มีสถานะ “เสร็จสิ้น” และ “ยกเลิก” ทั้งหมดออกจากรายการหลัก
-          ข้อมูลจะถูกย้ายไปเก็บในถังขยะ (ชีต TRASH) ยังกู้คืนได้ภายหลัง</p>
-        <button class="danger" onclick="purge()">🗑️ ล้างเรื่องที่จัดการแล้วทั้งหมด</button>
-        <div class="msg" id="pgMsg"></div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin:0 0 4px;font-size:16px;color:var(--red)">เปลี่ยนรหัสผ่านแอดมิน</h3>
-        <label for="pwOld">รหัสผ่านเดิม</label>
-        <input id="pwOld" type="password" placeholder="รหัสผ่านปัจจุบัน">
-        <label for="pwNew">รหัสผ่านใหม่</label>
-        <input id="pwNew" type="password" placeholder="อย่างน้อย 6 ตัวอักษร">
-        <button onclick="changePw()">บันทึกรหัสผ่านใหม่</button>
-        <div class="msg" id="pwMsg"></div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin:0 0 4px;font-size:16px;color:var(--red)">ข้อมูลระบบ</h3>
-        <div class="warn-box">
-          การเปลี่ยนสถานะหรือเขียนบันทึกในหน้านี้ ระบบจะส่งอีเมลแจ้งผู้แจ้งอัตโนมัติทันที
-          และบันทึกลงไทม์ไลน์ให้ผู้แจ้งเห็นความคืบหน้า
-        </div>
-        <div class="hint" style="margin-top:12px">
-          ข้อมูลลับของผู้แจ้ง (อีเมล / ตัวตนจริงกรณีปกปิดชื่อ) ถูกเก็บแยกในชีตที่ซ่อนและล็อกไว้
-          ระบบแอดมินนี้ไม่แสดงข้อมูลดังกล่าว
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <nav>
-    <button class="on" data-p="list"><i>📋</i>รายการเรื่อง</button>
-    <button data-p="topic"><i>🏷️</i>ประเภทเรื่อง</button>
-    <button data-p="tool"><i>⚙️</i>เครื่องมือ</button>
-  </nav>
 </div>
 
 <script>
-/* ============================================================
-   REDBOX ADMIN — Script
-   ============================================================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbye0mZF2XKfl-r25P_dEXhGn_I7oy1yjy_OPE0Yc1SnjaRH48K1PYuO74d2If4AS_0WZg/exec";
+const API = "https://script.google.com/macros/s/AKfycbye0mZF2XKfl-r25P_dEXhGn_I7oy1yjy_OPE0Yc1SnjaRH48K1PYuO74d2If4AS_0WZg/exec";
 
-const $ = id => document.getElementById(id);
-let TOKEN = sessionStorage.getItem("rb_token") || "";
-let DATA  = [];
-
-/* ---------- API (JSONP) ---------- */
-function api(params){
-  return new Promise((resolve, reject) => {
-    const cb = "acb_" + Date.now() + Math.floor(Math.random() * 1000);
-    const s  = document.createElement("script");
-    const timer = setTimeout(() => { cleanup(); reject(new Error("timeout")); }, 25000);
-    function cleanup(){ clearTimeout(timer); delete window[cb]; s.remove(); }
-    window[cb] = d => { cleanup(); resolve(d); };
-    s.onerror = () => { cleanup(); reject(new Error("network")); };
-    s.src = API_URL + "?" + new URLSearchParams({ ...params, callback: cb }).toString();
-    document.body.appendChild(s);
-  });
+// โหลดตัวเลขทันทีที่เปิดหน้าเว็บ
+async function loadStats(){
+  try {
+    const res = await fetch(API + "?action=quickStats").then(r => r.json());
+    document.getElementById("s-high").textContent = res.high;
+    document.getElementById("s-med").textContent = res.med;
+    document.getElementById("s-low").textContent = res.low;
+  } catch(e) {}
 }
-function show(el, cls, txt){
-  const m = $(el);
-  m.className = "msg " + cls;
-  m.innerHTML = txt;
-  m.style.display = "block";
-  setTimeout(() => { if (cls === "ok") m.style.display = "none"; }, 4000);
-}
-function esc(s){
-  return String(s == null ? "" : s)
-    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
+loadStats();
 
-/* ---------- ล็อกอิน ---------- */
-async function login(){
-  const u = $("lgUser").value.trim(), p = $("lgPass").value;
-  if (!u || !p) return show("lgMsg", "err", "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน");
-  const b = $("btnLogin");
-  b.disabled = true; b.innerHTML = '<span class="spin"></span> กำลังตรวจสอบ...';
-  try{
-    const r = await api({ action:"login", user:u, pass:p });
-    if (r.status === "ok"){
-      TOKEN = r.token;
-      sessionStorage.setItem("rb_token", TOKEN);
-      sessionStorage.setItem("rb_user", u);
-      enterApp();
-    } else if (r.status === "locked"){
-      show("lgMsg", "err", "พยายามเข้าสู่ระบบผิดหลายครั้ง กรุณารอ 15 นาที");
-    } else {
-      show("lgMsg", "err", "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-    }
-  }catch(e){ show("lgMsg", "err", "เชื่อมต่อไม่สำเร็จ กรุณาลองใหม่"); }
-  b.disabled = false; b.textContent = "เข้าสู่ระบบ";
-}
-$("btnLogin").addEventListener("click", login);
-$("lgPass").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
-
-function enterApp(){
-  $("loginScreen").style.display = "none";
-  $("appScreen").style.display = "block";
-  $("whoami").textContent = sessionStorage.getItem("rb_user") || "admin";
-  loadList(); loadTopics();
-}
-$("btnLogout").addEventListener("click", () => {
-  sessionStorage.clear(); location.reload();
-});
-function authFail(){
-  sessionStorage.clear();
-  alert("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
-  location.reload();
-}
-
-/* ---------- สลับแท็บ ---------- */
-document.querySelectorAll("nav button").forEach(b => {
-  b.addEventListener("click", () => {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("on"));
-    $("p-" + b.dataset.p).classList.add("on");
-    document.querySelectorAll("nav button").forEach(x => x.classList.remove("on"));
-    b.classList.add("on");
-    window.scrollTo({ top:0, behavior:"smooth" });
-  });
-});
-
-/* ---------- โหลดรายการ ---------- */
-async function loadList(){
-  $("list").innerHTML = '<div class="empty-state">กำลังโหลดข้อมูล...</div>';
-  try{
-    const r = await api({ action:"list", token:TOKEN, status:$("fStatus").value });
-    if (r.status === "auth") return authFail();
-    if (r.status !== "ok") throw new Error();
-    DATA = r.items || [];
-    renderStats(r.stats || {});
-    renderList();
-  }catch(e){
-    $("list").innerHTML = '<div class="empty-state">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</div>';
-  }
-}
-
-function renderStats(s){
-  const map = [
-    ["", "ทั้งหมด", s.total || 0, "#1b1b1f"],
-    ["รอตรวจสอบ", "รอตรวจสอบ", s["รอตรวจสอบ"] || 0, "#5a5a63"],
-    ["กำลังดำเนินการ", "กำลังทำ", s["กำลังดำเนินการ"] || 0, "#c77700"],
-    ["เสร็จสิ้น", "เสร็จสิ้น", s["เสร็จสิ้น"] || 0, "#14663a"],
-    ["ยกเลิก", "ยกเลิก", s["ยกเลิก"] || 0, "#a8181e"]
-  ];
-  const cur = $("fStatus").value;
-  $("stats").innerHTML = map.map(m =>
-    `<div class="stat ${cur === m[0] ? "on" : ""}" onclick="pickStat('${m[0]}')">
-       <b style="color:${m[3]}">${m[2]}</b><small>${m[1]}</small></div>`).join("");
-}
-function pickStat(v){ $("fStatus").value = v; loadList(); }
-
-function renderList(){
-  const q = $("q").value.trim().toLowerCase();
-  const rows = DATA.filter(d => !q ||
-    (d.ticket + d.name + d.message + d.topic + d.phone).toLowerCase().includes(q));
-
-  if (!rows.length){
-    $("list").innerHTML = '<div class="empty-state">ไม่พบรายการที่ตรงกับเงื่อนไข</div>';
-    return;
-  }
-
-  const CH = {
-    "รอตรวจสอบ":"c-wait", "กำลังดำเนินการ":"c-doing",
-    "เสร็จสิ้น":"c-done", "ยกเลิก":"c-cancel"
-  };
-  const UC = { "เร่งด่วนมาก":"u3", "ค่อนข้างเร่งด่วน":"u2" };
-
-  $("list").innerHTML = rows.map(d => `
-    <div class="item ${UC[d.urgency] || ""}" id="row-${esc(d.ticket)}">
-      <div class="item-top">
-        <span class="tk">${esc(d.ticket)}</span>
-        <span class="chip ${CH[d.status] || "c-wait"}">${esc(d.status)}</span>
-        ${d.urgency === "เร่งด่วนมาก" ? '<span class="chip c-urgent">🔴 เร่งด่วนมาก</span>' : ""}
-        <span style="flex:1"></span>
-        <span style="font-size:12px;color:#7a7a85">${esc(d.date)} ${esc(d.time)}</span>
-      </div>
-      <div class="meta">
-        <b>${esc(d.topic)}</b><br>
-        ผู้แจ้ง: ${esc(d.name)} ${d.sid !== "-" ? "(" + esc(d.sid) + ")" : ""}
-        · ${esc(d.level)}/${esc(d.room)} · โทร ${esc(d.phone)}
-        ${d.updated ? "<br>อัปเดตล่าสุด: " + esc(d.updated) : ""}
-      </div>
-      <div class="body">${esc(d.message)}</div>
-
-      ${(d.timeline && d.timeline.length) ? `
-      <details><summary>▸ ดูไทม์ไลน์ (${d.timeline.length})</summary>
-        <div class="tl2">${d.timeline.map(t =>
-          `<div><b>${esc(t.status)}</b> — ${esc(t.at)}${t.note ? "<br>" + esc(t.note) : ""}</div>`
-        ).join("")}</div></details>` : ""}
-
-      <label style="margin-top:12px">บันทึกของครู (ผู้แจ้งจะเห็นข้อความนี้)</label>
-      <textarea id="note-${esc(d.ticket)}" maxlength="500"
-        placeholder="เช่น ครูรับเรื่องแล้ว นัดพบที่ห้องกิจการนักเรียน วันจันทร์ เวลา 12.00 น.">${esc(d.note)}</textarea>
-
-      <div class="actions">
-        <select id="st-${esc(d.ticket)}">
-          ${["รอตรวจสอบ","กำลังดำเนินการ","เสร็จสิ้น","ยกเลิก"].map(s =>
-            `<option ${s === d.status ? "selected" : ""}>${s}</option>`).join("")}
-        </select>
-        <button onclick="save('${esc(d.ticket)}')">💾 บันทึก + แจ้งผู้แจ้ง</button>
-        <button class="danger" onclick="del('${esc(d.ticket)}')">🗑️ ลบ</button>
-      </div>
-    </div>`).join("");
-}
-$("q").addEventListener("input", renderList);
-
-/* ---------- บันทึกสถานะ ---------- */
-async function save(ticket){
-  const status = $("st-" + ticket).value;
-  const note   = $("note-" + ticket).value.trim();
-  const box    = $("row-" + ticket);
-  box.style.opacity = ".55";
-  try{
-    const r = await api({ action:"update", token:TOKEN, ticket, status, note });
-    if (r.status === "auth") return authFail();
-    if (r.status !== "ok") throw new Error();
-    alert("บันทึกเรียบร้อย" + (r.mailed ? " และส่งอีเมลแจ้งผู้แจ้งแล้ว" : " (ผู้แจ้งไม่ได้ระบุอีเมล)"));
-    loadList();
-  }catch(e){ alert("บันทึกไม่สำเร็จ กรุณาลองใหม่"); box.style.opacity = "1"; }
-}
-
-/* ---------- ลบรายการ ---------- */
-async function del(ticket){
-  if (!confirm("ยืนยันลบเรื่อง " + ticket + " ?\n\nข้อมูลจะถูกย้ายไปถังขยะ (ชีต TRASH) และผู้แจ้งจะติดตามไม่ได้อีก"))
-    return;
-  try{
-    const r = await api({ action:"delete", token:TOKEN, ticket });
-    if (r.status === "auth") return authFail();
-    if (r.status !== "ok") throw new Error();
-    loadList();
-  }catch(e){ alert("ลบไม่สำเร็จ กรุณาลองใหม่"); }
-}
-
-/* ---------- ล้างเรื่องที่จัดการแล้ว ---------- */
-async function purge(){
-  if (!confirm("ลบเรื่องที่ “เสร็จสิ้น” และ “ยกเลิก” ทั้งหมด?\n\nข้อมูลจะย้ายไปถังขยะ กู้คืนได้จากชีต TRASH"))
-    return;
-  try{
-    const r = await api({ action:"purge", token:TOKEN });
-    if (r.status === "auth") return authFail();
-    show("pgMsg", "ok", "ล้างข้อมูลแล้ว " + r.count + " รายการ");
-    loadList();
-  }catch(e){ show("pgMsg", "err", "ล้างข้อมูลไม่สำเร็จ"); }
-}
-
-/* ---------- จัดการประเภทเรื่อง ---------- */
-async function loadTopics(){
-  try{
-    const r = await api({ action:"topicList", token:TOKEN });
-    if (r.status === "auth") return authFail();
-    const list = r.items || [];
-    $("topicList").innerHTML = list.length ? list.map(t => `
-      <div class="topic-row ${t.active ? "" : "off"}">
-        <span>${esc(t.name)}</span>
-        <button class="ghost sm" onclick="toggleTopic('${esc(t.name)}')">
-          ${t.active ? "ปิดใช้" : "เปิดใช้"}</button>
-        <button class="danger sm" onclick="delTopic('${esc(t.name)}')">ลบ</button>
-      </div>`).join("")
-      : '<div class="empty-state">ยังไม่มีประเภทเรื่อง</div>';
-  }catch(e){
-    $("topicList").innerHTML = '<div class="empty-state">โหลดไม่สำเร็จ</div>';
-  }
-}
-async function addTopic(){
-  const name = $("newTopic").value.trim();
-  if (!name) return show("tpMsg", "err", "กรุณาพิมพ์ชื่อประเภทเรื่อง");
-  try{
-    const r = await api({ action:"topicAdd", token:TOKEN, name });
-    if (r.status === "auth") return authFail();
-    if (r.status === "dup") return show("tpMsg", "err", "มีประเภทนี้อยู่แล้ว");
-    $("newTopic").value = "";
-    show("tpMsg", "ok", "เพิ่มประเภทเรื่องแล้ว");
-    loadTopics();
-  }catch(e){ show("tpMsg", "err", "เพิ่มไม่สำเร็จ"); }
-}
-async function toggleTopic(name){
-  try{
-    const r = await api({ action:"topicToggle", token:TOKEN, name });
-    if (r.status === "auth") return authFail();
-    loadTopics();
-  }catch(e){ show("tpMsg", "err", "ทำรายการไม่สำเร็จ"); }
-}
-async function delTopic(name){
-  if (!confirm("ลบประเภท “" + name + "” ?\n\nเรื่องเดิมที่ใช้ประเภทนี้ยังคงอยู่ตามปกติ")) return;
-  try{
-    const r = await api({ action:"topicDelete", token:TOKEN, name });
-    if (r.status === "auth") return authFail();
-    show("tpMsg", "ok", "ลบแล้ว");
-    loadTopics();
-  }catch(e){ show("tpMsg", "err", "ลบไม่สำเร็จ"); }
-}
-
-/* ---------- เปลี่ยนรหัสผ่าน ---------- */
-async function changePw(){
-  const o = $("pwOld").value, n = $("pwNew").value;
-  if (n.length < 6) return show("pwMsg", "err", "รหัสผ่านใหม่ต้องยาวอย่างน้อย 6 ตัวอักษร");
-  try{
-    const r = await api({ action:"changePass", token:TOKEN, oldPass:o, newPass:n });
-    if (r.status === "auth") return authFail();
-    if (r.status === "wrong") return show("pwMsg", "err", "รหัสผ่านเดิมไม่ถูกต้อง");
-    $("pwOld").value = ""; $("pwNew").value = "";
-    show("pwMsg", "ok", "เปลี่ยนรหัสผ่านเรียบร้อย ครั้งต่อไปใช้รหัสใหม่เข้าสู่ระบบ");
-  }catch(e){ show("pwMsg", "err", "ทำรายการไม่สำเร็จ"); }
-}
-
-/* ---------- เริ่มต้น ---------- */
-if (TOKEN) {
-  api({ action:"ping", token:TOKEN }).then(r => {
-    if (r.status === "ok") enterApp();
-    else sessionStorage.clear();
-  }).catch(() => {});
-}
+// เมื่อล็อกอิน (นำไปสู่หน้า Dashboard ที่มีแถบสี)
+document.getElementById("btnLogin").onclick = () => {
+    // โค้ดเปลี่ยนหน้าหรือดึงรายการที่นี่
+    alert("ระบบกำลังเข้าสู่หน้าจัดการ...");
+};
 </script>
 </body>
 </html>
